@@ -96,6 +96,10 @@ You will see that after the bastion host has been provisioned, the private insta
   }
 ```
 
+<img width="762" alt="Screen Shot 2021-11-05 at 5 22 21 PM" src="https://user-images.githubusercontent.com/45148666/140580225-94a48d0a-c1eb-4304-a417-27506cd86aa3.png">
+
+
+
 ## Cleanup
 
 1. Run the following commands in the same Terminal
