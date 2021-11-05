@@ -54,4 +54,21 @@ This will create the new ssh key
   terraform apply
   ```
 
-You will see that after the bastion host has been provisioned, the private instance will then be provisioned. The terraform provisioner will connect to the private instance via the bastion host
+You will see that after the bastion host has been provisioned, the private instance will then be provisioned. The terraform provisioner will connect to the private instance via the bastion host. See the code snippet below.
+
+```hcl
+provisioner "remote-exec" {
+    inline = [
+      "sudo yum update -y"
+    ]
+  }
+
+  connection {
+    host             = self.private_ip
+    type             = "ssh"
+    user             = "ec2-user"
+    private_key      = file(var.ssh_private_key_path)
+    bastion_host     = aws_instance.my_bastion_instance.public_ip
+    bastion_host_key = file(var.ssh_public_key_path)
+  }
+```
