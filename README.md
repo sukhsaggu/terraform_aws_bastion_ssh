@@ -1,6 +1,6 @@
 # Using Terraform to set up a bastion host in AWS
 
-In this example we'll generate a ssh key pair and use terraform to create the following resources:
+In this example we'll generate a ssh key pair and use terraform to create the following resources. The goal is to be able to ssh to a bastion host and run a terraform provisioner to the private instance.
 
 - Network
   - VPC
@@ -16,6 +16,11 @@ In this example we'll generate a ssh key pair and use terraform to create the fo
   - keypair
   - Bastion host (public Subnet)
   - Private Instance (Private Subnet)
+
+## Pre-requisites
+
+- Terraform cli installed
+- AWS account with permissions to create the above resources
 
 ## Generating a new SSH Key
 
