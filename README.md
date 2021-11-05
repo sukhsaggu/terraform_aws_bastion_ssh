@@ -28,7 +28,7 @@ In this example we'll generate a ssh key pair and use terraform to create the fo
 2. Paste the text below
 
   ```shell
-  ssh-keygen -m PEM -f terraform_aws_bastion_ssh -N
+  ssh-keygen -m PEM -f terraform_aws_bastion_ssh -N ''
   ```
 
 This will create the new ssh key
@@ -43,23 +43,46 @@ This will create the new ssh key
   export AWS_DEFAULT_REGION=ca-central-1
   ```  
 
+## Create the .tfvars file
+
+Typically we don't commit the .tfvars file to version control. For ease:
+
+1. Run the following command in the same Terminal
+
+  ```shell
+  cp terraform.tfvars.example terraform.tfvars
+  ```
+
 ## Run the terraform commands
 
-1. Run the following commands in the same terminal
+1. Run the following commands in the same Terminal
 
   ```shell
   terraform init
   terraform validate
   terraform plan
+  ```
+
+2. Review the planned changes and run the following command
+
+  ```shell
   terraform apply
   ```
 
-You will see that after the bastion host has been provisioned, the private instance will then be provisioned. The terraform provisioner will connect to the private instance via the bastion host. See the code snippet below.
+3. When prompted type **yes**
+
+You will see that after the bastion host has been provisioned, the private instance will then be provisioned. The terraform provisioner will connect to the private instance via the bastion host and run the inline scripts to setup the LAMP stack. See the code snippet below.
 
 ```hcl
-provisioner "remote-exec" {
+  provisioner "remote-exec" {
     inline = [
-      "sudo yum update -y"
+      "sudo yum update -y",
+      "sudo amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2",
+      "cat /etc/system-release",
+      "sudo yum install -y httpd mariadb-server",
+      "sudo systemctl start httpd",
+      "sudo systemctl enable httpd",
+      "sudo systemctl is-enabled httpd"
     ]
   }
 
@@ -72,3 +95,13 @@ provisioner "remote-exec" {
     bastion_host_key = file(var.ssh_public_key_path)
   }
 ```
+
+## Cleanup
+
+1. Run the following commands in the same Terminal
+
+  ```shell
+  terraform destroy
+  ```
+
+2. When prompted type **yes**

@@ -9,15 +9,15 @@ variable "environment" {
 }
 
 variable "vpc_cidr" {
-  description = "vpc cidr"
+  description = "vpc cidr block"
 }
 
 variable "public_subnet_cidr" {
-  description = "Public Subnet CIDR"
+  description = "Public Subnet cidr block"
 }
 
 variable "private_subnet_cidr" {
-  description = "Private Subnet CIDR"
+  description = "Private Subnet cidr block"
 }
 
 variable "public_subnet_az" {

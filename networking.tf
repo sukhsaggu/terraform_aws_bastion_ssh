@@ -1,3 +1,4 @@
+# Create the VPC
 resource "aws_vpc" "my_vpc" {
   cidr_block           = var.vpc_cidr
   enable_dns_hostnames = true
@@ -7,6 +8,7 @@ resource "aws_vpc" "my_vpc" {
   }
 }
 
+# Create the Public and Private Subnets
 resource "aws_subnet" "public" {
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = var.public_subnet_cidr
@@ -17,16 +19,17 @@ resource "aws_subnet" "public" {
   }
 }
 
-resource "aws_subnet" "nated" {
+resource "aws_subnet" "private" {
   vpc_id            = aws_vpc.my_vpc.id
   cidr_block        = var.private_subnet_cidr
   availability_zone = var.private_subnet_az
 
   tags = {
-    Name = "NAT-ed Subnet"
+    Name = "Private Subnet"
   }
 }
 
+# Create the Internet Gateway
 resource "aws_internet_gateway" "my_vpc_igw" {
   vpc_id = aws_vpc.my_vpc.id
 
@@ -35,16 +38,19 @@ resource "aws_internet_gateway" "my_vpc_igw" {
   }
 }
 
+# Create the elastic IP for the Nat Gateway
 resource "aws_eip" "nat_gw_eip" {
   vpc = true
 }
 
+
+# Create the NAT Gateway
 resource "aws_nat_gateway" "gw" {
   allocation_id = aws_eip.nat_gw_eip.id
   subnet_id     = aws_subnet.public.id
 }
 
-
+# Create the Subnet Route table and associate with the Public Subnet
 resource "aws_route_table" "my_vpc_ca_central_1a_public" {
   vpc_id = aws_vpc.my_vpc.id
 
@@ -63,7 +69,9 @@ resource "aws_route_table_association" "my_vpc_ca_central_1a_public" {
   route_table_id = aws_route_table.my_vpc_ca_central_1a_public.id
 }
 
-resource "aws_route_table" "my_vpc_ca_central_1a_nated" {
+# Create the Subnet Route table and associate with the Private Subnet
+
+resource "aws_route_table" "my_vpc_ca_central_1a_private" {
   vpc_id = aws_vpc.my_vpc.id
 
   route {
@@ -72,16 +80,16 @@ resource "aws_route_table" "my_vpc_ca_central_1a_nated" {
   }
 
   tags = {
-    Name = "Main Route Table for NAT-ed subnet"
+    Name = "Main Route Table for Private subnet"
   }
 }
 
-resource "aws_route_table_association" "my_vpc_ca_central_1a_nated" {
-  subnet_id      = aws_subnet.nated.id
-  route_table_id = aws_route_table.my_vpc_ca_central_1a_nated.id
+resource "aws_route_table_association" "my_vpc_ca_central_1a_private" {
+  subnet_id      = aws_subnet.private.id
+  route_table_id = aws_route_table.my_vpc_ca_central_1a_private.id
 }
 
-
+# Create the security groups to allow ssh ingress and all traffic out
 resource "aws_security_group" "allow_ssh" {
   name        = "allow_ssh_sg"
   description = "Allow SSH inbound connections"

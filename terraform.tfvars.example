@@ -1,0 +1,8 @@
+aws_region           = "ca-central-1"
+vpc_cidr             = "10.0.0.0/16"
+public_subnet_az     = "ca-central-1a"
+private_subnet_az    = "ca-central-1a"
+public_subnet_cidr   = "10.0.0.0/24"
+private_subnet_cidr  = "10.0.1.0/24"
+ssh_public_key_path  = "terraform_aws_bastion_ssh.pub"
+ssh_private_key_path = "terraform_aws_bastion_ssh"
