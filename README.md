@@ -2,6 +2,10 @@
 
 In this example we'll generate a ssh key pair and use terraform to create the following resources. The goal is to be able to ssh to a bastion host and run a terraform provisioner to the private instance.
 
+![ssh_bastion_host](https://user-images.githubusercontent.com/45148666/140925697-2c4193c6-a00e-4b5f-a3e4-14091ffb13e8.jpg)
+
+
+
 - Network
   - VPC
   - Public Subnet
